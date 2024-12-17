@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:group_mbti/model/evaluation_group.dart';
+import 'package:group_mbti/pages/input_mbti.dart';
 import 'package:group_mbti/pages/result.dart';
 
 class MBTIScreen extends StatefulWidget {
@@ -65,37 +66,38 @@ class _MBTIScreenState extends State<MBTIScreen> {
     );
   }
 
+  void _navigateinputMBTI() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => inputMBTIScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("MBTI研究所"),
+        title: const Text("MBTI調査"),
         centerTitle: true,
         foregroundColor: Colors.black,
         backgroundColor: const Color.fromARGB(255, 221, 123, 94),
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
-              if (value == 'same') {
-                //_navigateSameMBTI();
-              } else if (value == 'different') {
-                // _navigateDifferentMBTI();
-              } else if (value == "input") {
-                //_navigateInputMBTI();
+              if (value == 'input') {
+                _navigateinputMBTI();
+              } else if (value == 'watchtrend') {
+                // _navigatetrendMBTI();
               }
             },
             itemBuilder: (context) => [
               const PopupMenuItem(
-                value: 'same',
-                child: Text("同じMBTIで繋がる"),
-              ),
-              const PopupMenuItem(
-                value: 'different',
-                child: Text("違うMBTIで繋がる"),
-              ),
-              const PopupMenuItem(
                 value: 'input',
-                child: Text("自分MBTIを入力"),
+                child: Text("自分の情報を入力"),
+              ),
+              const PopupMenuItem(
+                value: 'watchtrend',
+                child: Text("MBTIの傾向を見る"),
               ),
             ],
             icon: const Icon(Icons.more_vert),

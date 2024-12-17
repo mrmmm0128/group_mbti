@@ -1,88 +1,98 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:group_mbti/pages/result.dart';
+import 'package:group_mbti/model/ArtistSearch.dart';
 
-class MBTIScreen extends StatefulWidget {
+class inputMBTIScreen extends StatefulWidget {
   @override
-  _MBTIScreenState createState() => _MBTIScreenState();
+  _inputMBTIScreenState createState() => _inputMBTIScreenState();
 }
 
-class _MBTIScreenState extends State<MBTIScreen> {
-  List<TextEditingController> _nameControllers = [];
-  List<String> _selectedMBTI = [];
-  List<String> MBTI_List = [
-    "ENFJ",
-    "ENFP",
+class _inputMBTIScreenState extends State<inputMBTIScreen> {
+  final List<TextEditingController> _artistControllers = [];
+  String _selectedMBTI = "INTJ";
+  final List<String> MBTI_List = [
+    "INTJ",
+    "INTP",
     "ENTJ",
     "ENTP",
     "INFJ",
     "INFP",
-    "INTJ",
-    "INTP",
-    "ISFJ",
-    "ISFP",
+    "ENFJ",
+    "ENFP",
     "ISTJ",
-    "ISTP",
-    "ESFJ",
-    "ESFP",
+    "ISFJ",
     "ESTJ",
-    "ESTP"
+    "ESFJ",
+    "ISTP",
+    "ISFP",
+    "ESTP",
+    "ESFP",
   ];
-  List<TextEditingController> _artistControllers = [];
 
   @override
   void initState() {
     super.initState();
+    _addNewInputField(); // 最初の入力フィールドを追加
+  }
+
+  void _addNewInputField() {
+    setState(() {
+      _artistControllers.add(TextEditingController());
+    });
   }
 
   void _removeMember(int index) {
     setState(() {
-      _nameControllers.removeAt(index);
-      _selectedMBTI.removeAt(index);
+      _artistControllers.removeAt(index);
     });
   }
 
-  void _navigateResult() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ResultScreen()),
-    );
-  }
-
   void _saveData() async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final firestore = FirebaseFirestore.instance;
 
-    for (int i = 0; i < _nameControllers.length; i++) {
-      String mbti = _selectedMBTI[i];
-      String artist = _artistControllers[i].text;
+    try {
+      for (int i = 0; i < _artistControllers.length; i++) {
+        String artistName = _artistControllers[i].text.trim();
 
-      if (artist.isEmpty) continue; // アーティスト名が空の場合はスキップ
-
-      // 該当するMBTIコレクションのドキュメントを取得
-      final docRef = firestore.collection(mbti).doc(artist);
-      final docSnapshot = await docRef.get();
-
-      if (docSnapshot.exists) {
-        // ドキュメントが存在する場合、既存のカウントを増加
-        int currentCount = docSnapshot.data()?['カウント'] ?? 0;
-        await docRef.update({'カウント': currentCount + 1});
-      } else {
-        // ドキュメントが存在しない場合、新規作成
-        await docRef.set({'カウント': 1});
+        if (artistName.isNotEmpty) {
+          // 選択されたMBTIコレクションに保存
+          await firestore.collection(_selectedMBTI).doc("アーティスト").set(
+              {artistName: FieldValue.increment(1)}, SetOptions(merge: true));
+        } else {
+          // 入力が空の場合のエラーメッセージ
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("アーティスト名が入力されていないフィールドがあります！ (行: ${i + 1})"),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return; // 処理を中断
+        }
       }
-    }
 
-    // 保存完了時の通知
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("データを保存しました！")),
-    );
+      // 保存成功時のフィードバック
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("ご回答ありがとうございました！"),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      // エラー発生時のフィードバック
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("データ保存中にエラーが発生しました: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("MBTI研究所"),
+        title: const Text("MBTI調査"),
         centerTitle: true,
         foregroundColor: Colors.black,
         backgroundColor: const Color.fromARGB(255, 221, 123, 94),
@@ -92,63 +102,73 @@ class _MBTIScreenState extends State<MBTIScreen> {
           const Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
-              '自分のMBTIと好きなアーティストを入力しましょう！',
+              'MBTIと好きなアーティストを入力しましょう',
               style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(12),
+            child: Text(
+              "これから調査項目を増やしていく予定です。",
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+          ),
+          // MBTI選択欄
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: DropdownButton<String>(
+              value: _selectedMBTI,
+              items: MBTI_List.map((mbti) => DropdownMenuItem(
+                    value: mbti,
+                    child: Text(mbti),
+                  )).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedMBTI = value!;
+                });
+              },
             ),
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: _nameControllers.length,
+              itemCount: _artistControllers.length,
               itemBuilder: (context, index) {
                 return ListTile(
                   leading: CircleAvatar(
                     backgroundColor: const Color.fromARGB(255, 221, 123, 94),
                     child: Text("${index + 1}"),
                   ),
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextField(
-                        controller: _nameControllers[index],
-                        decoration: const InputDecoration(
-                          labelText: "名前を入力",
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      DropdownButton<String>(
-                        value: _selectedMBTI[index],
-                        items: MBTI_List.map((mbti) => DropdownMenuItem(
-                              value: mbti,
-                              child: Text(mbti),
-                            )).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedMBTI[index] = value!;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _artistControllers[index],
-                        decoration: const InputDecoration(
-                          labelText: "好きなアーティストを入力",
-                        ),
-                      ),
-                    ],
+                  title:
+                      ArtistSearchField(controller: _artistControllers[index]),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      _removeMember(index);
+                    },
                   ),
                 );
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: _saveData,
-              child: const Text(
-                "決定",
-                style: TextStyle(color: Colors.black),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: _addNewInputField,
+                child: const Text(
+                  "アーティスト追加",
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
-            ),
+              const SizedBox(width: 16),
+              ElevatedButton(
+                onPressed: _saveData,
+                child: const Text(
+                  "提出",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ],
           ),
         ],
       ),
