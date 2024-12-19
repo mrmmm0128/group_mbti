@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:group_mbti/firebase_options.dart';
-import 'package:group_mbti/pages/input_mbti.dart';
 import 'package:group_mbti/pages/mbti_group.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -32,13 +31,13 @@ class MyApp extends StatelessWidget {
         if (uri.pathSegments[0] == "Artist") {
           // Artist を含む場合、InputMBTIScreen に遷移
           return MaterialPageRoute(
-            builder: (context) => inputMBTIScreen(),
+            builder: (context) => MBTIScreen(),
           );
         }
 
         // デフォルトは MBTIScreen
         return MaterialPageRoute(
-          builder: (context) => inputMBTIScreen(),
+          builder: (context) => MBTIScreen(),
         );
       },
     );

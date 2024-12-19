@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:group_mbti/model/evaluation_group.dart';
 import 'package:group_mbti/pages/input_mbti.dart';
 import 'package:group_mbti/pages/result.dart';
+import 'package:group_mbti/pages/result_artist_mbti.dart';
 
 class MBTIScreen extends StatefulWidget {
   @override
@@ -73,6 +74,13 @@ class _MBTIScreenState extends State<MBTIScreen> {
     );
   }
 
+  void _navigateResultMBTI() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ResultArtistScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +95,7 @@ class _MBTIScreenState extends State<MBTIScreen> {
               if (value == 'input') {
                 _navigateinputMBTI();
               } else if (value == 'watchtrend') {
-                // _navigatetrendMBTI();
+                _navigateResultMBTI();
               }
             },
             itemBuilder: (context) => [

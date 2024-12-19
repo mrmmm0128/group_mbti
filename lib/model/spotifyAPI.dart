@@ -50,4 +50,32 @@ class SpotifyService {
       throw Exception("Failed to fetch artists");
     }
   }
+
+  // SpotifyService内のgetArtistImage関数（修正なし）
+  static Future<String?> getArtistImage(String artistName) async {
+    if (_accessToken == null) {
+      await _getAccessToken();
+    }
+
+    final response = await http.get(
+      Uri.parse(
+          'https://api.spotify.com/v1/search?q=${Uri.encodeComponent(artistName)}&type=artist&limit=1'),
+      headers: {
+        'Authorization': 'Bearer $_accessToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      final List artists = json['artists']['items'];
+
+      if (artists.isNotEmpty && artists[0]['images'].isNotEmpty) {
+        return artists[0]['images'][0]['url']; // 最初の画像URLを返す
+      } else {
+        return null; // 画像がない場合
+      }
+    } else {
+      throw Exception("Failed to fetch artist image");
+    }
+  }
 }
