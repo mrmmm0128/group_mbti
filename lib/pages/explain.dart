@@ -22,17 +22,41 @@ class Explain extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               const Text(
-                '1. グループ名を入力しよう',
+                '1. 名前とMBTIを入力しましょう',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               const Text(
-                'みんなで割り勘を利用するメンバーのグループ名を入力しましょう！\n',
+                '診断ページから、グループ全員の名前とMBTIを入力してください。\nもしMBTIがわからない方がいれば、MBTIページからたった4問の質問に答えるだけで、簡易的にMBTI診断を行うことができます。',
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                '2. 診断しよう',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                '診断ボタンを押して、グループの相性を診断しましょう。',
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const Text(
+                '3. 結果を見てみよう',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                '診断が終わると、グループの点数（100点満点）やレーダーチャート、個人間の相性など様々なデータが確認できます。\n自分たちのグループをMBTIの観点から診断した結果を見て、みんなで盛り上がりましょう！',
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 16),
               const Text(
-                'さあ、お金の不安をなくして友達、家族と楽しい時間を過ごそう！',
+                'さあ、診断ページへ GO！',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 24),

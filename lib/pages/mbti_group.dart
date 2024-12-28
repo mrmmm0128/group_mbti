@@ -321,6 +321,34 @@ class _MBTIScreenState extends State<MBTIScreen> {
     "ESTP"
   ];
 
+  Color _getBackgroundColor2(String mbti) {
+    // 背景色のパレット
+    List<Color> colors = [
+      Color(0xFFDCC7E1),
+      Color(0xFFCFE8D5),
+      Color(0xFFCFE4F6),
+      Color(0xFFFFF4CC),
+    ];
+
+    // MBTIのカテゴリに応じて色を割り当て
+    if (mbti.contains("NT")) {
+      return colors[0]; // NT -> パープル
+    } else if (mbti.contains("NF")) {
+      return colors[1]; // NF -> イエロー
+    } else if (mbti.contains("SFJ")) {
+      return colors[2]; // SJ -> グリーン
+    } else if (mbti.contains("STJ")) {
+      return colors[2];
+    } else if (mbti.contains("SFP")) {
+      return colors[3]; // SP -> ブルー
+    } else if (mbti.contains("STP")) {
+      return colors[3];
+    } else {
+      // デフォルトの背景色
+      return Color(0xFFFFFFFF); // 白
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -400,38 +428,54 @@ class _MBTIScreenState extends State<MBTIScreen> {
             child: ListView.builder(
               itemCount: _nameControllers.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Color.fromARGB(255, 221, 123, 94),
-                    child: Text("${index + 1}"),
-                  ),
-                  title: TextField(
-                    controller: _nameControllers[index],
-                    decoration: InputDecoration(
-                      labelText: "名前を入力",
-                    ),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      DropdownButton<String>(
-                        value: _selectedMBTI[index],
-                        items: MBTI_List.map((mbti) => DropdownMenuItem(
-                              value: mbti,
-                              child: Text(mbti),
-                            )).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedMBTI[index] = value!;
-                          });
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.remove_circle),
-                        onPressed: () => _removeMember(index),
-                        tooltip: '削除',
+                return Container(
+                  margin: EdgeInsets.symmetric(vertical: 4), // 各アイテムの上下の余白
+                  decoration: BoxDecoration(
+                    color: _getBackgroundColor2(_selectedMBTI[index]), // 背景色
+                    borderRadius: BorderRadius.circular(16), // 角を丸くする
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1), // 影の色
+                        spreadRadius: 1, // 影の広がり
+                        blurRadius: 3, // ぼかしの強さ
+                        offset: Offset(0, 1), // 影の位置
                       ),
                     ],
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor:
+                          _getBackgroundColor2(_selectedMBTI[index]),
+                      child: Text("${index + 1}"),
+                    ),
+                    title: TextField(
+                      controller: _nameControllers[index],
+                      decoration: InputDecoration(
+                        labelText: "名前を入力",
+                      ),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        DropdownButton<String>(
+                          value: _selectedMBTI[index],
+                          items: MBTI_List.map((mbti) => DropdownMenuItem(
+                                value: mbti,
+                                child: Text(mbti),
+                              )).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedMBTI[index] = value!;
+                            });
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.remove_circle),
+                          onPressed: () => _removeMember(index),
+                          tooltip: '削除',
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

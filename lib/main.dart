@@ -12,7 +12,7 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static const String _title = 'BottomNavBar Code Sample';
+  static const String _title = 'Sample';
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +34,13 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
   @override
-
   final List<Widget> _pages = [
     Explain(),
     MBTIScreen(),
     EasyCheck(),
     Center(
       child: Text(
-        "This is the history Page",
+        "comming soon!",
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       ),
     ),
@@ -53,12 +52,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     });
   }
 
-
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('MBTI研究所'),
-        backgroundColor: Color.fromARGB(255, 221, 123, 94),
+        title: const Text('MBTIグループ診断'),
+        backgroundColor: Color.fromARGB(255, 207, 207, 207),
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -92,12 +90,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         // 横向きレイアウトは省略します。
         // landscapeLayout: 省略
         selectedFontSize: 20,
-        selectedIconTheme: const IconThemeData(size: 30, color: Color.fromARGB(255, 0, 0, 0)),
+        selectedIconTheme:
+            const IconThemeData(size: 30, color: Color.fromARGB(255, 0, 0, 0)),
         selectedLabelStyle: const TextStyle(color: Colors.red),
         // ちなみに、LabelStyleとItemColorの両方を選択した場合、ItemColorが勝ちます。
         selectedItemColor: Colors.black,
         unselectedFontSize: 15,
-        unselectedIconTheme: const IconThemeData(size: 25, color: Color.fromARGB(255, 255, 255, 255)),
+        unselectedIconTheme: const IconThemeData(
+            size: 25, color: Color.fromARGB(255, 255, 255, 255)),
         unselectedLabelStyle: const TextStyle(color: Colors.purple),
         // IconTheme系統の値が優先されるのでこの値は適応されません。
         unselectedItemColor: Colors.black,
@@ -106,4 +106,3 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 }
-

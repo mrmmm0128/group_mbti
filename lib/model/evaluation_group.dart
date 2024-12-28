@@ -104,13 +104,25 @@ String calculateMBTI(Map<int, String> answers) {
 }
 
 List<String> countAndSortMBTILetters(Map<String, String> mbtiDict) {
-  // MBTI文字のカウントを保持するマップ
-  Map<String, int> letterCount = {};
+  // 初期値として、各MBTI文字のカウントを 0 に設定したマップを作成
+  Map<String, int> letterCount = {
+    'I': 0,
+    'E': 0,
+    'N': 0,
+    'S': 0,
+    'T': 0,
+    'F': 0,
+    'J': 0,
+    'P': 0
+  };
 
   // MBTIタイプを抽出してアルファベットをカウント
   mbtiDict.values.forEach((mbti) {
     for (var letter in mbti.split('')) {
-      letterCount[letter] = (letterCount[letter] ?? 0) + 1;
+      // 文字が 'I', 'E', 'N', 'S', 'T', 'F', 'J', 'P' に含まれていればカウント
+      if (letterCount.containsKey(letter)) {
+        letterCount[letter] = (letterCount[letter] ?? 0) + 1;
+      }
     }
   });
 
@@ -119,5 +131,8 @@ List<String> countAndSortMBTILetters(Map<String, String> mbtiDict) {
     ..sort((a, b) => b.value.compareTo(a.value));
 
   // ソートされたアルファベットだけのリストを作成して返す
-  return sortedLetters.map((entry) => entry.key).toList();
+  var finalSortedLetters = sortedLetters.map((entry) => entry.key).toList();
+
+  print(finalSortedLetters);
+  return finalSortedLetters;
 }

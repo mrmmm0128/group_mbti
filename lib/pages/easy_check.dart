@@ -15,6 +15,34 @@ class _EasyCheckPageState extends State<EasyCheck> {
     "自分の考えをよく深く掘り下げますか？",
   ];
 
+  Color _getBackgroundColor2(String mbti) {
+    // 背景色のパレット
+    List<Color> colors = [
+      Color(0xFFDCC7E1),
+      Color(0xFFCFE8D5),
+      Color(0xFFCFE4F6),
+      Color(0xFFFFF4CC),
+    ];
+
+    // MBTIのカテゴリに応じて色を割り当て
+    if (mbti.contains("NT")) {
+      return colors[0]; // NT -> パープル
+    } else if (mbti.contains("NF")) {
+      return colors[1]; // NF -> イエロー
+    } else if (mbti.contains("SFJ")) {
+      return colors[2]; // SJ -> グリーン
+    } else if (mbti.contains("STJ")) {
+      return colors[2];
+    } else if (mbti.contains("SFP")) {
+      return colors[3]; // SP -> ブルー
+    } else if (mbti.contains("STP")) {
+      return colors[3];
+    } else {
+      // デフォルトの背景色
+      return Color(0xFFFFFFFF); // 白
+    }
+  }
+
   // 回答の保存用マップ
   final Map<int, String> answers = {};
 
@@ -22,8 +50,7 @@ class _EasyCheckPageState extends State<EasyCheck> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("簡単MBTI診断"),
-        backgroundColor: const Color.fromARGB(255, 221, 221, 221),
+        title: const Text("簡単にMBTIを診断しよう"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -107,6 +134,7 @@ class _EasyCheckPageState extends State<EasyCheck> {
                   builder: (context) => AlertDialog(
                     title: const Text("診断結果"),
                     content: Text("あなたのMBTIは $result です！"),
+                    backgroundColor: _getBackgroundColor2(result),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(),
