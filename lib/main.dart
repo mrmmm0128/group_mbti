@@ -1,4 +1,6 @@
-import 'package:app_base/pages/book_page.dart';
+import 'package:app_base/firebase_options.dart';
+import 'package:app_base/pages/mbti_history.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'pages/explain.dart';
 import 'pages/mbti_group.dart';
@@ -6,7 +8,10 @@ import 'pages/easy_check.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -33,17 +38,11 @@ class MyStatefulWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
-  @override
   final List<Widget> _pages = [
     Explain(),
     MBTIScreen(),
     EasyCheck(),
-    Center(
-      child: Text(
-        "comming soon!",
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-      ),
-    ),
+    GroupListPage(),
   ];
 
   void _onItemTapped(int index) {
