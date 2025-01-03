@@ -73,6 +73,28 @@ class _GroupListPageState extends State<GroupListPage> {
     }
   }
 
+  // グループをFirestoreから削除
+  Future<void> _deleteGroup(int index) async {
+    var group = _groupMembers[index];
+    var groupId = group['groupId'] - 1; // 削除するグループのIDを取得
+    var deviceId = await getDeviceIDweb();
+    try {
+      await FirebaseFirestore.instance
+          .collection('devices')
+          .doc(deviceId)
+          .update({
+        'groups': FieldValue.arrayRemove([groupId])
+      });
+
+      setState(() {
+        _groupMembers.removeAt(index); // ローカルリストから削除
+      });
+      print('グループが削除されました');
+    } catch (e) {
+      print("エラーが発生しました: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +102,7 @@ class _GroupListPageState extends State<GroupListPage> {
         title: Text('自分のグループ一覧'),
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator()) // ローディング中はインジケーターを表示
+          ? Center(child: CircularProgressIndicator())
           : _groupMembers.isEmpty
               ? Center(child: Text("まだ参加しているグループはありません"))
               : ListView.builder(
@@ -89,12 +111,9 @@ class _GroupListPageState extends State<GroupListPage> {
                     var group = _groupMembers[index];
                     var groupId = group['groupId'];
                     List<Map<String, String>> members = group['members'];
-                    // nameとmbtiをList<String>として分ける
-                    // 名前のリストを作成
+
                     List<String> names =
                         members.map((member) => member['name']!).toList();
-
-                    // MBTIのリストを作成
                     List<String> mbtis =
                         members.map((member) => member['mbti']!).toList();
 
@@ -103,21 +122,29 @@ class _GroupListPageState extends State<GroupListPage> {
                       child: InkWell(
                         onTap: () {
                           print(members);
-                          // ボタンがタップされたときの処理をここで定義
                           navigateResult(context, mbtis, names);
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'グループ $groupId', // グループIDを表示
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'グループ $groupId',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () => _deleteGroup(index),
+                                ),
+                              ],
                             ),
                             Column(
                               children: members.map<Widget>((member) {
