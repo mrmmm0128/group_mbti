@@ -11,8 +11,8 @@ class _EasyCheckPageState extends State<EasyCheck> {
   final List<String> questions = [
     "新しい環境でもすぐに馴染めますか？",
     "計画を立てて行動することが多いですか？",
-    "他人と関わるのが楽しいと感じますか？",
-    "自分の考えをよく深く掘り下げますか？",
+    "一人よりも友達と過ごすことが好きですか？",
+    "自分の考えを掘り下げることが多いですか？",
   ];
 
   Color _getBackgroundColor2(String mbti) {
@@ -49,13 +49,23 @@ class _EasyCheckPageState extends State<EasyCheck> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 239, 239, 239),
       appBar: AppBar(
-        title: const Text("簡単にMBTIを診断しよう"),
+        title: const Text("簡単にMBTIを診断しましょう"),
+        backgroundColor: const Color.fromARGB(255, 239, 239, 239),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            const Text(
+              "4つの質問に答えましょう",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Divider(),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
@@ -126,6 +136,9 @@ class _EasyCheckPageState extends State<EasyCheck> {
             const SizedBox(height: 16),
             // 完了ボタン
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 239, 239, 239),
+              ),
               onPressed: () {
                 // 結果を計算して表示
                 String result = calculateMBTI(answers);
@@ -144,7 +157,9 @@ class _EasyCheckPageState extends State<EasyCheck> {
                   ),
                 );
               },
-              child: const Text("診断"),
+              child: const Text(
+                "診断",
+              ),
             ),
           ],
         ),

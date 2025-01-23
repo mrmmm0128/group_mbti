@@ -64,7 +64,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.help_outline_outlined),
-            label: '使い方',
+            label: '一覧',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.business),
@@ -85,16 +85,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         backgroundColor: const Color.fromARGB(255, 179, 179, 179),
         enableFeedback: true,
         // IconTheme系統の値が優先されます。
-        iconSize: 18,
+        iconSize: 20,
         // 横向きレイアウトは省略します。
         // landscapeLayout: 省略
-        selectedFontSize: 20,
+        selectedFontSize: 15,
         selectedIconTheme:
             const IconThemeData(size: 30, color: Color.fromARGB(255, 0, 0, 0)),
         selectedLabelStyle: const TextStyle(color: Colors.red),
         // ちなみに、LabelStyleとItemColorの両方を選択した場合、ItemColorが勝ちます。
         selectedItemColor: Colors.black,
-        unselectedFontSize: 15,
+        unselectedFontSize: 12,
         unselectedIconTheme: const IconThemeData(
             size: 25, color: Color.fromARGB(255, 255, 255, 255)),
         unselectedLabelStyle: const TextStyle(color: Colors.purple),

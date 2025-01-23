@@ -36,10 +36,10 @@ class _MBTIScreenState extends State<MBTIScreen> {
   Color _getBackgroundColor2(String mbti) {
     // 背景色のパレット
     List<Color> colors = [
-      Color(0xFFDCC7E1),
-      Color(0xFFCFE8D5),
-      Color(0xFFCFE4F6),
-      Color(0xFFFFF4CC),
+      Color.fromARGB(255, 217, 189, 224),
+      Color.fromARGB(255, 187, 232, 197),
+      Color.fromARGB(255, 191, 220, 245),
+      Color.fromARGB(255, 248, 232, 175),
     ];
 
     // MBTIのカテゴリに応じて色を割り当て
@@ -98,7 +98,7 @@ class _MBTIScreenState extends State<MBTIScreen> {
       });
       print("グループデータの保存に成功");
 
-      var deviceId = await getDeviceIDweb();
+      var deviceId = await getDeviceUUID();
       print(deviceId);
 
       final deviceRef = FirebaseFirestore.instance
@@ -157,6 +157,7 @@ class _MBTIScreenState extends State<MBTIScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 239, 239, 239),
       body: Column(
         children: [
           const Padding(
@@ -205,6 +206,9 @@ class _MBTIScreenState extends State<MBTIScreen> {
                                 value: mbti,
                                 child: Text(mbti),
                               )).toList(),
+                          borderRadius: BorderRadius.circular(15.0),
+                          dropdownColor:
+                              _getBackgroundColor2(_selectedMBTI[index]),
                           onChanged: (value) {
                             setState(() {
                               _selectedMBTI[index] = value!;
@@ -235,11 +239,13 @@ class _MBTIScreenState extends State<MBTIScreen> {
                 ),
                 SizedBox(width: 16),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 239, 239, 239),
+                  ),
                   onPressed: () async {
                     List<String> names = _nameControllers
                         .map((controller) => controller.text)
                         .toList();
-                    print(names);
                     await _saveGroup();
                     navigateResult(context, _selectedMBTI, names); // 結果画面へ遷移
                   },
