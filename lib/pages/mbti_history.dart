@@ -1,5 +1,6 @@
 import 'package:app_base/model/getDeviceId.dart';
 import 'package:app_base/model/result_group.dart';
+import 'package:app_base/pages/timeline_history.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -42,6 +43,7 @@ class _GroupListPageState extends State<GroupListPage> {
               .get();
           if (groupDoc.exists) {
             List<Map<String, String>> members = [];
+            String _groupName = "";
             // グループメンバーを取得
             for (var member in groupDoc['members']) {
               members.add({
@@ -49,11 +51,18 @@ class _GroupListPageState extends State<GroupListPage> {
                 'mbti': member['mbti'].toString(),
               });
             }
+
+            if (groupDoc["groupName"] != "defolt") {
+              _groupName = groupDoc["groupName"];
+            } else {
+              _groupName = _groupName = (index + 1).toString();
+            }
             setState(() {
               // グループごとのデータ（グループIDとメンバー）をリストに追加
               _groupMembers.add({
-                'groupId': index + 1, // groupIdを代わりに使用
+                'groupName': _groupName, // groupIdを代わりに使用
                 'members': members,
+                "groupId": groupId,
               });
               _isLoading = false; // ローディング状態を解除
             });
@@ -73,65 +82,155 @@ class _GroupListPageState extends State<GroupListPage> {
     }
   }
 
+  Future<void> _changeGroupName(int index) async {
+    var group = _groupMembers[index];
+    String groupId = group['groupId'];
+    TextEditingController controller =
+        TextEditingController(text: group['groupName']);
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("グループ名を変更"),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(labelText: "新しいグループ名"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("キャンセル"),
+            ),
+            TextButton(
+              onPressed: () async {
+                String newName = controller.text.trim();
+                if (newName.isNotEmpty) {
+                  await FirebaseFirestore.instance
+                      .collection('groups')
+                      .doc(groupId)
+                      .update({'groupName': newName});
+                  setState(() {
+                    _groupMembers[index]['groupName'] = newName;
+                  });
+                }
+                Navigator.pop(context);
+              },
+              child: Text("保存"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteGroup(int index) async {
+    var group = _groupMembers[index];
+    var groupId = group['groupId'];
+    var deviceId = await getDeviceIDweb();
+    try {
+      await FirebaseFirestore.instance
+          .collection('devices')
+          .doc(deviceId)
+          .update({
+        'groups': FieldValue.arrayRemove([groupId])
+      });
+      setState(() {
+        _groupMembers.removeAt(index);
+      });
+      print('グループが削除されました');
+    } catch (e) {
+      print("エラーが発生しました: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('自分のグループ一覧'),
-      ),
+      appBar: AppBar(title: Text('自分のグループ一覧')),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator()) // ローディング中はインジケーターを表示
+          ? Center(child: CircularProgressIndicator())
           : _groupMembers.isEmpty
               ? Center(child: Text("まだ参加しているグループはありません"))
-              : ListView.builder(
-                  itemCount: _groupMembers.length,
-                  itemBuilder: (context, index) {
-                    var group = _groupMembers[index];
-                    var groupId = group['groupId'];
-                    List<Map<String, String>> members = group['members'];
-                    // nameとmbtiをList<String>として分ける
-                    // 名前のリストを作成
-                    List<String> names =
-                        members.map((member) => member['name']!).toList();
-
-                    // MBTIのリストを作成
-                    List<String> mbtis =
-                        members.map((member) => member['mbti']!).toList();
-
-                    return Card(
-                      margin: EdgeInsets.all(10),
-                      child: InkWell(
-                        onTap: () {
-                          print(members);
-                          // ボタンがタップされたときの処理をここで定義
-                          navigateResult(context, mbtis, names);
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'グループ $groupId', // グループIDを表示
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+              : Column(
+                  children: [
+                    Expanded(
+                      // 🔹 ListViewの高さを制限
+                      child: ListView.builder(
+                        itemCount: _groupMembers.length,
+                        itemBuilder: (context, index) {
+                          var group = _groupMembers[index];
+                          List<Map<String, String>> members = group['members'];
+                          return Card(
+                            margin: EdgeInsets.all(10),
+                            child: InkWell(
+                              onTap: () {
+                                List<String> names = members
+                                    .map((member) => member['name']!)
+                                    .toList();
+                                List<String> mbtis = members
+                                    .map((member) => member['mbti']!)
+                                    .toList();
+                                navigateResult(context, mbtis, names);
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: GestureDetector(
+                                          onTap: () => _changeGroupName(index),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                group['groupName'],
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Icon(Icons.edit, size: 18),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.delete),
+                                        onPressed: () => _deleteGroup(index),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: members.map<Widget>((member) {
+                                      return ListTile(
+                                        title: Text(member['name']!),
+                                        subtitle:
+                                            Text('MBTI: ${member['mbti']}'),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ],
                               ),
                             ),
-                            Column(
-                              children: members.map<Widget>((member) {
-                                return ListTile(
-                                  title: Text(member['name']!),
-                                  subtitle: Text('MBTI: ${member['mbti']}'),
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    TimelineGroupsPage()), // 遷移先のページ
+                          );
+                        },
+                        child: Text("みんなの診断を見る"))
+                  ],
                 ),
     );
   }

@@ -93,9 +93,10 @@ class _MBTIScreenState extends State<MBTIScreen> {
       print("次のグループ番号: $nextGroupNumber");
 
       // グループデータを保存
-      await firestore.collection('groups').doc(nextGroupNumber.toString()).set({
-        'members': members,
-      });
+      await firestore
+          .collection('groups')
+          .doc(nextGroupNumber.toString())
+          .set({'members': members});
       print("グループデータの保存に成功");
 
       var deviceId = await getDeviceUUID();
@@ -172,7 +173,8 @@ class _MBTIScreenState extends State<MBTIScreen> {
               itemCount: _nameControllers.length,
               itemBuilder: (context, index) {
                 return Container(
-                  margin: EdgeInsets.symmetric(vertical: 4), // 各アイテムの上下の余白
+                  margin: EdgeInsets.symmetric(
+                      vertical: 4, horizontal: 8), // 各アイテムの上下の余白
                   decoration: BoxDecoration(
                     color: _getBackgroundColor2(_selectedMBTI[index]), // 背景色
                     borderRadius: BorderRadius.circular(16), // 角を丸くする
@@ -240,7 +242,7 @@ class _MBTIScreenState extends State<MBTIScreen> {
                 SizedBox(width: 16),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 239, 239, 239),
+                    backgroundColor: Color.fromARGB(255, 207, 207, 207),
                   ),
                   onPressed: () async {
                     List<String> names = _nameControllers
@@ -251,7 +253,8 @@ class _MBTIScreenState extends State<MBTIScreen> {
                   },
                   child: Text(
                     "診断",
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
