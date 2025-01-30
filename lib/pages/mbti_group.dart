@@ -138,6 +138,31 @@ class _MBTIScreenState extends State<MBTIScreen> {
     }
   }
 
+  String _getMBTIicon(String mbti) {
+    // MBTIタイプに対応する画像パスをマップで定義
+    Map<String, String> mbtiIcons = {
+      "INTJ": "assets/INTJ.png",
+      "INTP": "assets/INTP.png",
+      "ENTJ": "assets/ENTJ.png",
+      "ENTP": "assets/ENTP.png",
+      "INFJ": "assets/INFJ.png",
+      "INFP": "assets/INFP.png",
+      "ENFJ": "assets/ENFJ.png",
+      "ENFP": "assets/ENFP.png",
+      "ISTJ": "assets/ISTJ.png",
+      "ISFJ": "assets/ISFJ.png",
+      "ESTJ": "assets/ESTJ.png",
+      "ESFJ": "assets/ESFJ.png",
+      "ISTP": "assets/ISTP.png",
+      "ISFP": "assets/ISFP.png",
+      "ESTP": "assets/ESTP.png",
+      "ESFP": "assets/ESFP.png",
+    };
+
+    // MBTIに対応する画像パスを返す（該当がなければデフォルトの画像を返す）
+    return mbtiIcons[mbti] ?? "assets/image1.png";
+  }
+
   Future<void> _saveGroup() async {
     // メンバーリストを作成
     List<Map<String, String>> members = [];
@@ -198,15 +223,18 @@ class _MBTIScreenState extends State<MBTIScreen> {
                   ),
                   child: ListTile(
                     leading: CircleAvatar(
+                      radius: 24,
+
                       backgroundColor:
                           _getBackgroundColor2(_selectedMBTI[index]),
-                      child: Text("${index + 1}"),
+                      backgroundImage: AssetImage(
+                          _getMBTIicon(_selectedMBTI[index])), // 画像を表示
                     ),
                     title: TextField(
                       controller: _nameControllers[index],
                       decoration: InputDecoration(
-                        labelText: "名前を入力",
-                      ),
+                          labelText: "メンバー ${index + 1}",
+                          floatingLabelBehavior: FloatingLabelBehavior.never),
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,

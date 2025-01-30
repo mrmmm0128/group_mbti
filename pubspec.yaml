@@ -75,6 +75,23 @@ flutter:
   - assets/easycheck.png
   - assets/image1.png
   - assets/image2.png
+
+  - assets/INTJ.png
+  - assets/INTP.png
+  - assets/INFJ.png
+  - assets/INFP.png
+  - assets/ISTJ.png
+  - assets/ISTP.png
+  - assets/ISFJ.png
+  - assets/ISFP.png
+  - assets/ENTJ.png
+  - assets/ENTP.png
+  - assets/ENFJ.png
+  - assets/ENFP.png
+  - assets/ESTJ.png
+  - assets/ESTP.png
+  - assets/ESFJ.png
+  - assets/ESFP.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

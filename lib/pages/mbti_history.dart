@@ -147,7 +147,11 @@ class _GroupListPageState extends State<GroupListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('自分のグループ一覧')),
+      appBar: AppBar(
+        title: Text('自分のグループ一覧'),
+        backgroundColor: const Color.fromARGB(255, 239, 239, 239),
+      ),
+      backgroundColor: const Color.fromARGB(255, 239, 239, 239),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : _groupMembers.isEmpty
@@ -176,13 +180,21 @@ class _GroupListPageState extends State<GroupListPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8),
-                                        child: GestureDetector(
+                                  // 上部: グループ名と編集・削除ボタン
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10)),
+                                      color: const Color.fromARGB(
+                                          255, 251, 187, 187), // 上部の背景色
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        GestureDetector(
                                           onTap: () => _changeGroupName(index),
                                           child: Row(
                                             children: [
@@ -193,32 +205,39 @@ class _GroupListPageState extends State<GroupListPage> {
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
-                                              SizedBox(
-                                                width: 6,
-                                              ),
+                                              SizedBox(width: 6),
                                               Icon(Icons.edit, size: 18),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                      IconButton(
-                                        icon: Icon(Icons.delete),
-                                        onPressed: () => _deleteGroup(index),
-                                      ),
-                                    ],
+                                        IconButton(
+                                          icon: Icon(Icons.delete),
+                                          onPressed: () => _deleteGroup(index),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  Divider(),
-                                  Column(
-                                    children: members.map<Widget>((member) {
-                                      return Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Text(member['name']!),
-                                          Text('MBTI: ${member['mbti']}')
-                                        ],
-                                      );
-                                    }).toList(),
+
+                                  // 下部: メンバーリスト
+                                  Container(
+                                    color: Colors.grey[200], // 下部の背景色
+                                    padding: const EdgeInsets.all(8),
+                                    child: Column(
+                                      children: members.map<Widget>((member) {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 4),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Text(member['name']!),
+                                              Text('MBTI: ${member['mbti']}'),
+                                            ],
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
                                   ),
                                 ],
                               ),
