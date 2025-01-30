@@ -10,9 +10,9 @@ class MBTIScreen extends StatefulWidget {
 
 class _MBTIScreenState extends State<MBTIScreen> {
   List<int> chartValue = [1, 5, 3, 4, 5, 4]; // サンプルデータ
-
   List<TextEditingController> _nameControllers = [];
   List<String> _selectedMBTI = [];
+  bool _isChecked = false;
 
   List<String> MBTI_List = [
     "ENFJ",
@@ -87,15 +87,25 @@ class _MBTIScreenState extends State<MBTIScreen> {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
       QuerySnapshot snapshot = await firestore.collection('groups').get();
+      QuerySnapshot snapshot_timeline =
+          await firestore.collection('timeline_groups').get();
       print("既存のグループデータを取得: ${snapshot.docs.length}");
 
       int nextGroupNumber = snapshot.docs.length + 1;
+      int nextGroupTimeline = snapshot_timeline.docs.length + 1;
       print("次のグループ番号: $nextGroupNumber");
 
       // グループデータを保存
-      await firestore.collection('groups').doc(nextGroupNumber.toString()).set({
-        'members': members,
-      });
+      await firestore
+          .collection('groups')
+          .doc(nextGroupNumber.toString())
+          .set({'members': members, "groupName": "defolt"});
+      if (_isChecked) {
+        await firestore
+            .collection("timeline_groups")
+            .doc(nextGroupTimeline.toString())
+            .set({"groupName": "defolt", "members": members});
+      }
       print("グループデータの保存に成功");
 
       var deviceId = await getDeviceIDweb();
@@ -228,6 +238,15 @@ class _MBTIScreenState extends State<MBTIScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Checkbox(
+                  value: _isChecked,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      _isChecked = value!;
+                    });
+                  },
+                ),
+                Text(_isChecked ? "タイムラインに投稿する" : "タイムラインに投稿しない"),
                 IconButton(
                   onPressed: _addMember,
                   icon: Icon(Icons.add),
