@@ -127,7 +127,7 @@ class _GroupListPageState extends State<GroupListPage> {
   Future<void> _deleteGroup(int index) async {
     var group = _groupMembers[index];
     var groupId = group['groupId'];
-    var deviceId = await getDeviceIDweb();
+    var deviceId = await getDeviceUUID();
     try {
       await FirebaseFirestore.instance
           .collection('devices')
@@ -162,7 +162,7 @@ class _GroupListPageState extends State<GroupListPage> {
                           var group = _groupMembers[index];
                           List<Map<String, String>> members = group['members'];
                           return Card(
-                            margin: EdgeInsets.all(10),
+                            margin: EdgeInsets.all(20),
                             child: InkWell(
                               onTap: () {
                                 List<String> names = members
@@ -181,7 +181,7 @@ class _GroupListPageState extends State<GroupListPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(8),
                                         child: GestureDetector(
                                           onTap: () => _changeGroupName(index),
                                           child: Row(
@@ -192,6 +192,9 @@ class _GroupListPageState extends State<GroupListPage> {
                                                     fontSize: 18,
                                                     fontWeight:
                                                         FontWeight.bold),
+                                              ),
+                                              SizedBox(
+                                                width: 6,
                                               ),
                                               Icon(Icons.edit, size: 18),
                                             ],
@@ -204,12 +207,16 @@ class _GroupListPageState extends State<GroupListPage> {
                                       ),
                                     ],
                                   ),
+                                  Divider(),
                                   Column(
                                     children: members.map<Widget>((member) {
-                                      return ListTile(
-                                        title: Text(member['name']!),
-                                        subtitle:
-                                            Text('MBTI: ${member['mbti']}'),
+                                      return Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text(member['name']!),
+                                          Text('MBTI: ${member['mbti']}')
+                                        ],
                                       );
                                     }).toList(),
                                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_radar_chart/flutter_radar_chart.dart';
 import '/model/evaluation_group.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ResultScreen extends StatefulWidget {
   final int totalrank;
@@ -197,7 +198,21 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String shareLink =
+        "https://apps.apple.com/jp/app/mbti%E3%81%AB%E3%82%88%E3%82%8B%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E7%9B%B8%E6%80%A7%E8%A8%BA%E6%96%AD/id6739538706";
     List<String> names = widget.NameAndMbti.keys.toList();
+    String rank = widget.totalrank.toString();
+    String formatMembers(Map<String, String> members) {
+      // 各キーと値を "キー：値" の形式に変換してリストにする
+      List<String> formattedMembers = members.entries.map((entry) {
+        return "${entry.key}：${entry.value}";
+      }).toList();
+
+      // 改行で結合して1つの文字列にする
+      return formattedMembers.join("\n");
+    }
+
+    String sharemenbers = formatMembers(widget.NameAndMbti);
     // indexに基づいてコメントを選択
 
     return Scaffold(
@@ -205,6 +220,22 @@ class _ResultScreenState extends State<ResultScreen> {
         title: const Text("MBTIグループ診断"),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 214, 214, 214),
+        elevation: 4,
+        shadowColor: Colors.black,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: () {
+              // 共有する内容
+              String shareText =
+                  "あなたたちのグループ相性を診断しました！\n\n診断したメンバー \n $sharemenbers\n診断結果 $rank 点\n\nさらに詳しい情報が知りたい方はアプリをインストール！ \n$shareLink";
+              const subject = "結果を共有しましょう";
+
+              // 共有機能を呼び出し
+              Share.share(shareText, subject: subject);
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(

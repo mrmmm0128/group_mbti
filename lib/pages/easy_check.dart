@@ -133,33 +133,93 @@ class _EasyCheckPageState extends State<EasyCheck> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             // 完了ボタン
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 239, 239, 239),
-              ),
-              onPressed: () {
-                // 結果を計算して表示
-                String result = calculateMBTI(answers);
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text("診断結果"),
-                    content: Text("あなたのMBTIは $result です！"),
-                    backgroundColor: _getBackgroundColor2(result),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text("閉じる"),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              child: const Text(
-                "診断",
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 画面幅に応じて画像サイズを計算
+                Builder(
+                  builder: (context) {
+                    final screenWidth =
+                        MediaQuery.of(context).size.width; // 画面幅を取得
+                    final imageSize = screenWidth * 0.3; // 画像のサイズを画面幅の20%に設定
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/image1.png",
+                          width: imageSize, // 動的な幅
+                          height: imageSize, // 動的な高さ
+                        ),
+                        SizedBox(width: 16), // 画像間のスペース
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 207, 207, 207),
+                          ),
+                          onPressed: () {
+                            // 結果を計算して表示
+                            String result = calculateMBTI(answers);
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                final screenWidth =
+                                    MediaQuery.of(context).size.width; // 画面幅を取得
+                                final imageSize =
+                                    screenWidth * 0.5; // 画面幅の50%を画像サイズとして設定
+
+                                return AlertDialog(
+                                  title: const Text("診断結果"),
+                                  content: Column(
+                                    mainAxisSize:
+                                        MainAxisSize.min, // 内容に合わせてサイズを調整
+                                    children: [
+                                      Text("あなたのMBTIは $result です！",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16)),
+                                      SizedBox(height: 10), // テキストと画像の間隔
+                                      Image.asset(
+                                        "assets/easycheck.png", // 表示する画像のパス
+                                        height: imageSize, // 動的な高さ
+                                        width: imageSize, // 動的な幅
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: _getBackgroundColor2(result),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text("閉じる"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: const Text(
+                            "診断",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Image.asset(
+                          "assets/image2.png",
+                          width: imageSize, // 動的な幅
+                          height: imageSize, // 動的な高さ
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),

@@ -64,7 +64,7 @@ class MBTIDetailPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             Container(
               alignment: Alignment.center,
               width: double.infinity,
@@ -197,21 +197,13 @@ class MBTIDetailPage extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: _getBackgroundColor2(bestMBTI),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          bestMBTI,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          decoration: BoxDecoration(
+                            color: _getBackgroundColor2(bestMBTI),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                        ),
-                      ),
+                          child: buildMBTIItem2(context, bestMBTI)),
                     ],
                   ),
                   const Divider(),
@@ -247,29 +239,21 @@ class MBTIDetailPage extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 8),
-                        decoration: BoxDecoration(
-                          color: _getBackgroundColor2(worstMBTI),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          worstMBTI,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 8),
+                          decoration: BoxDecoration(
+                            color: _getBackgroundColor2(worstMBTI),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                        ),
-                      ),
+                          child: buildMBTIItem2(context, worstMBTI)),
                     ],
                   ),
                 ],
               ),
             ),
             const SizedBox(
-              height: 10,
+              height: 6,
             ),
             Container(
               alignment: Alignment.centerLeft,
@@ -307,6 +291,11 @@ class MBTIDetailPage extends StatelessWidget {
                 ],
               ),
             ),
+//            Image.asset(
+//              "assets/image1.png",
+//              height: 100,
+//              width: 100,
+//            )
           ],
         ),
       ),
@@ -329,5 +318,44 @@ class MBTIDetailPage extends StatelessWidget {
         style: TextStyle(fontSize: 15),
       ),
     );
+  }
+
+  Widget buildMBTIItem2(BuildContext context, String type) {
+    Map<String, String> typeToDescription = {
+      "INTJ": "建築家",
+      "INTP": "論理学者",
+      "ENTJ": "指揮官",
+      "ENTP": "討論者",
+      "INFJ": "提唱者",
+      "INFP": "仲介者",
+      "ENFJ": "主人公",
+      "ENFP": "広報運動家",
+      "ISTJ": "管理者",
+      "ISFJ": "擁護者",
+      "ESTJ": "幹部",
+      "ESFJ": "領事官",
+      "ISTP": "巨匠",
+      "ISFP": "冒険者",
+      "ESTP": "起業家",
+      "ESFP": "エンターテイナー",
+    };
+    return GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MBTIDetailPage(
+                  type: type, description: typeToDescription[type] ?? ""),
+            ),
+          );
+        },
+        child: Text(
+          type,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ));
   }
 }

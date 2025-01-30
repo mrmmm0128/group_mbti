@@ -56,9 +56,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       appBar: AppBar(
         title: const Text('MBTIグループ診断'),
         backgroundColor: Color.fromARGB(255, 207, 207, 207),
+        elevation: 4,
+        shadowColor: Colors.black,
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        elevation: 4,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[

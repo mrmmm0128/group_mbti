@@ -11,7 +11,7 @@ class Explain extends StatelessWidget {
         body: SingleChildScrollView(
             // ここでスクロールを有効にする
             child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+          padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start, // 左寄せ
               children: [
