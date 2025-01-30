@@ -23,7 +23,7 @@ class _GroupListPageState extends State<GroupListPage> {
   Future<void> _loadGroupData() async {
     try {
       // デバイスIDを取得する関数（仮定）
-      var deviceId = await getDeviceIDweb();
+      var deviceId = await getDeviceUUID();
       // デバイスIDに基づくFirestoreのドキュメント参照
       var deviceRef =
           FirebaseFirestore.instance.collection('devices').doc(deviceId);

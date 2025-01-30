@@ -332,5 +332,4 @@ Future<void> navigateResult(BuildContext context, MBTI, member) async {
               compatibilityScores: compatibilityScores,
             )),
   );
-  print(nameAndMBTIDict);
 }
