@@ -1,3 +1,4 @@
+import 'package:app_base/model/evaluation_group.dart';
 import 'package:app_base/model/getDeviceId.dart';
 import 'package:app_base/model/result_group.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -81,30 +82,30 @@ class _MBTIScreenState extends State<MBTIScreen> {
     });
   }
 
-  Future<void> _saveToFirestore(List<Map<String, String>> members) async {
+  Future<void> _saveToFirestore(
+      List<Map<String, String>> members, int rank) async {
     try {
       print("Firestoreインスタンスを取得...");
       FirebaseFirestore firestore = FirebaseFirestore.instance;
 
       QuerySnapshot snapshot = await firestore.collection('groups').get();
-      QuerySnapshot snapshot_timeline =
-          await firestore.collection('timeline_groups').get();
       print("既存のグループデータを取得: ${snapshot.docs.length}");
 
       int nextGroupNumber = snapshot.docs.length + 1;
-      int nextGroupTimeline = snapshot_timeline.docs.length + 1;
+
       print("次のグループ番号: $nextGroupNumber");
 
       // グループデータを保存
       await firestore
           .collection('groups')
           .doc(nextGroupNumber.toString())
-          .set({'members': members, "groupName": "defolt"});
+          .set({"groupName": "defolt", "members": members, "totalrank": rank});
       if (_isChecked) {
         await firestore
             .collection("timeline_groups")
-            .doc(nextGroupTimeline.toString())
-            .set({"groupName": "defolt", "members": members});
+            .doc(nextGroupNumber.toString())
+            .set(
+                {"groupName": "defolt", "members": members, "totalrank": rank});
       }
       print("グループデータの保存に成功");
 
@@ -166,6 +167,7 @@ class _MBTIScreenState extends State<MBTIScreen> {
   Future<void> _saveGroup() async {
     // メンバーリストを作成
     List<Map<String, String>> members = [];
+    int totalrank = mbtiCheck(_selectedMBTI, checkList);
 
     // 名前の入力が1人だけの場合はエラーを表示して終了
     if (_nameControllers.length == 1) {
@@ -186,7 +188,7 @@ class _MBTIScreenState extends State<MBTIScreen> {
       });
     }
     // Firestoreに保存
-    await _saveToFirestore(members);
+    await _saveToFirestore(members, totalrank);
   }
 
   @override

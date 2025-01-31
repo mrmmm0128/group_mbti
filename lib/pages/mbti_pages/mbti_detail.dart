@@ -2,6 +2,7 @@ import 'package:app_base/model/evaluation_group.dart';
 import 'package:app_base/pages/mbti_pages/explain_mbti.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class MBTIDetailPage extends StatelessWidget {
   final String type;
   final String description;

@@ -1,3 +1,4 @@
+import 'package:app_base/model/result_group.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -51,25 +52,69 @@ class _TimelineGroupsPageState extends State<TimelineGroupsPage> {
               itemCount: _groups.length,
               itemBuilder: (context, index) {
                 var group = _groups[index].data() as Map<String, dynamic>;
-                String groupName = group['groupName'] ?? '未設定';
+
                 List<dynamic> members = group['members'] ?? [];
+                String rank = group["totalrank"];
 
                 return Card(
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
+                  margin: EdgeInsets.all(20),
+                  child: InkWell(
+                    onTap: () {
+                      List names =
+                          members.map((member) => member['name']!).toList();
+                      List mbtis =
+                          members.map((member) => member['mbti']!).toList();
+                      navigateResult(context, mbtis, names);
+                    },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(groupName,
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
-                        SizedBox(height: 5),
-                        Column(
-                          children: members.map((member) {
-                            return Text(
-                                '${member['name']} (MBTI: ${member['mbti']})');
-                          }).toList(),
+                        // 上部: グループ名と編集・削除ボタン
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10)),
+                            color: const Color.fromARGB(
+                                255, 251, 187, 187), // 上部の背景色
+                          ),
+                        ),
+
+                        // 下部: メンバーリスト
+                        Container(
+                          color: Colors.grey[200], // 下部の背景色
+                          padding: const EdgeInsets.all(8),
+                          constraints: BoxConstraints(
+                            maxHeight: 200, // 高さ制限（適宜調整）
+                          ),
+                          child: Row(
+                            // ← ここを `Row` に変更
+                            crossAxisAlignment:
+                                CrossAxisAlignment.center, // 縦方向の中央揃え
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // メンバーリスト
+                              Expanded(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start, // 横方向の中央揃え
+                                  children: members.map<Widget>((member) {
+                                    return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 4),
+                                        child: Text(member['mbti']!));
+                                  }).toList(),
+                                ),
+                              ),
+                              SizedBox(width: 16), // 🔹 ランクとの間隔を適度に設定
+                              Text("$rank 点",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -79,9 +124,15 @@ class _TimelineGroupsPageState extends State<TimelineGroupsPage> {
             ),
           ),
           if (_hasMore)
-            TextButton(
-              onPressed: _fetchGroups,
-              child: _isLoading ? CircularProgressIndicator() : Text("もっと見る"),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: ElevatedButton(
+                onPressed: _fetchGroups,
+                child: _isLoading ? CircularProgressIndicator() : Text("もっと見る"),
+                style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white, //押したときの色！！
+                    backgroundColor: Colors.deepOrangeAccent),
+              ),
             ),
         ],
       ),

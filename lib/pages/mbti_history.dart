@@ -63,6 +63,7 @@ class _GroupListPageState extends State<GroupListPage> {
                 'groupName': _groupName, // groupIdを代わりに使用
                 'members': members,
                 "groupId": groupId,
+                "totalrank": groupDoc["totalrank"],
               });
               _isLoading = false; // ローディング状態を解除
             });
@@ -135,6 +136,10 @@ class _GroupListPageState extends State<GroupListPage> {
           .update({
         'groups': FieldValue.arrayRemove([groupId])
       });
+      await FirebaseFirestore.instance
+          .collection("timeline_groups")
+          .doc(groupId)
+          .delete();
       setState(() {
         _groupMembers.removeAt(index);
       });
@@ -165,6 +170,7 @@ class _GroupListPageState extends State<GroupListPage> {
                         itemBuilder: (context, index) {
                           var group = _groupMembers[index];
                           List<Map<String, String>> members = group['members'];
+                          String rank = group["totalrank"].toString();
                           return Card(
                             margin: EdgeInsets.all(20),
                             child: InkWell(
@@ -205,7 +211,9 @@ class _GroupListPageState extends State<GroupListPage> {
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
-                                              SizedBox(width: 6),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
                                               Icon(Icons.edit, size: 18),
                                             ],
                                           ),
@@ -222,21 +230,46 @@ class _GroupListPageState extends State<GroupListPage> {
                                   Container(
                                     color: Colors.grey[200], // 下部の背景色
                                     padding: const EdgeInsets.all(8),
-                                    child: Column(
-                                      children: members.map<Widget>((member) {
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 4),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Text(member['name']!),
-                                              Text('MBTI: ${member['mbti']}'),
-                                            ],
+                                    constraints: BoxConstraints(
+                                      maxHeight: 200, // 高さ制限（適宜調整）
+                                    ),
+                                    child: Row(
+                                      // ← ここを `Row` に変更
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center, // 縦方向の中央揃え
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        // メンバーリスト
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children:
+                                                members.map<Widget>((member) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 4),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Text(member['name']!),
+                                                    SizedBox(width: 4),
+                                                    Text(" : "),
+                                                    Text(member['mbti']!),
+                                                  ],
+                                                ),
+                                              );
+                                            }).toList(),
                                           ),
-                                        );
-                                      }).toList(),
+                                        ),
+                                        SizedBox(width: 16), // 🔹 ランクとの間隔を適度に設定
+                                        Text("$rank 点",
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold)),
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -246,16 +279,22 @@ class _GroupListPageState extends State<GroupListPage> {
                         },
                       ),
                     ),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    TimelineGroupsPage()), // 遷移先のページ
-                          );
-                        },
-                        child: Text("みんなの診断を見る"))
+                    Padding(
+                        padding: EdgeInsets.all(8),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      TimelineGroupsPage()), // 遷移先のページ
+                            );
+                          },
+                          child: Text("みんなの診断を見る"),
+                          style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.deepOrangeAccent),
+                        ))
                   ],
                 ),
     );
