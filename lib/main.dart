@@ -53,12 +53,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('MBTIグループ診断'),
-        backgroundColor: Color.fromARGB(255, 207, 207, 207),
-        elevation: 4,
-        shadowColor: Colors.black,
-      ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         elevation: 4,
@@ -85,7 +79,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         ],
         // ここで色を設定していても、shiftingにしているので
         // Itemの方のbackgroundColorが勝ちます。
-        backgroundColor: const Color.fromARGB(255, 179, 179, 179),
+        backgroundColor: const Color.fromARGB(255, 254, 254, 254),
         enableFeedback: true,
         // IconTheme系統の値が優先されます。
         iconSize: 20,
@@ -99,7 +93,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         selectedItemColor: Colors.black,
         unselectedFontSize: 12,
         unselectedIconTheme: const IconThemeData(
-            size: 25, color: Color.fromARGB(255, 255, 255, 255)),
+          size: 25,
+          color: Colors.black,
+        ),
         unselectedLabelStyle: const TextStyle(color: Colors.purple),
         // IconTheme系統の値が優先されるのでこの値は適応されません。
         unselectedItemColor: Colors.black,

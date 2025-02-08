@@ -13,6 +13,7 @@ class _TimelineGroupsPageState extends State<TimelineGroupsPage> {
   bool _isLoading = false;
   bool _hasMore = true;
   DocumentSnapshot? _lastDocument;
+  String? isSelectedItem = '相性が良い順'; // 初期値を設定
 
   @override
   void initState() {
@@ -44,7 +45,44 @@ class _TimelineGroupsPageState extends State<TimelineGroupsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('タイムライン')),
+      appBar: AppBar(
+        title: Text('みんなの診断'),
+        actions: [
+          DropdownButton<String>(
+            items: const [
+              DropdownMenuItem(
+                value: '相性が良い順',
+                child: Text('相性が良い順'),
+              ),
+              DropdownMenuItem(
+                value: '相性が悪い順',
+                child: Text('相性が悪い順'),
+              ),
+            ],
+            onChanged: (String? value) {
+              setState(() {
+                isSelectedItem = value;
+
+                // 並べ替えのロジック
+                if (value == '相性が良い順') {
+                  _groups.sort((a, b) {
+                    var rankA = a['totalrank'] ?? 0;
+                    var rankB = b['totalrank'] ?? 0;
+                    return rankB.compareTo(rankA); // 大きい順に並べ替え
+                  });
+                } else if (value == '相性が悪い順') {
+                  _groups.sort((a, b) {
+                    var rankA = a['totalrank'] ?? 0;
+                    var rankB = b['totalrank'] ?? 0;
+                    return rankA.compareTo(rankB); // 小さい順に並べ替え
+                  });
+                }
+              });
+            },
+            value: isSelectedItem,
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
@@ -54,7 +92,7 @@ class _TimelineGroupsPageState extends State<TimelineGroupsPage> {
                 var group = _groups[index].data() as Map<String, dynamic>;
 
                 List<dynamic> members = group['members'] ?? [];
-                String rank = group["totalrank"];
+                String rank = group["totalrank"].toString();
 
                 return Card(
                   margin: EdgeInsets.all(20),
@@ -130,8 +168,9 @@ class _TimelineGroupsPageState extends State<TimelineGroupsPage> {
                 onPressed: _fetchGroups,
                 child: _isLoading ? CircularProgressIndicator() : Text("もっと見る"),
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, //押したときの色！！
-                    backgroundColor: Colors.deepOrangeAccent),
+                  foregroundColor: Colors.black,
+                  backgroundColor: Color.fromARGB(255, 207, 207, 207),
+                ),
               ),
             ),
         ],

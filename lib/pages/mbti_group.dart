@@ -96,16 +96,31 @@ class _MBTIScreenState extends State<MBTIScreen> {
       print("次のグループ番号: $nextGroupNumber");
 
       // グループデータを保存
-      await firestore
-          .collection('groups')
-          .doc(nextGroupNumber.toString())
-          .set({"groupName": "defolt", "members": members, "totalrank": rank});
       if (_isChecked) {
+        await firestore
+            .collection('groups')
+            .doc(nextGroupNumber.toString())
+            .set({
+          "groupName": "defolt",
+          "members": members,
+          "totalrank": rank,
+          "timeline": 1.toString()
+        });
         await firestore
             .collection("timeline_groups")
             .doc(nextGroupNumber.toString())
             .set(
                 {"groupName": "defolt", "members": members, "totalrank": rank});
+      } else {
+        await firestore
+            .collection('groups')
+            .doc(nextGroupNumber.toString())
+            .set({
+          "groupName": "defolt",
+          "members": members,
+          "totalrank": rank,
+          "timeline": 0.toString()
+        });
       }
       print("グループデータの保存に成功");
 

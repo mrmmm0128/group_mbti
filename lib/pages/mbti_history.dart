@@ -64,6 +64,7 @@ class _GroupListPageState extends State<GroupListPage> {
                 'members': members,
                 "groupId": groupId,
                 "totalrank": groupDoc["totalrank"],
+                "timeline": groupDoc["timeline"],
               });
               _isLoading = false; // ローディング状態を解除
             });
@@ -129,23 +130,55 @@ class _GroupListPageState extends State<GroupListPage> {
     var group = _groupMembers[index];
     var groupId = group['groupId'];
     var deviceId = await getDeviceUUID();
-    try {
-      await FirebaseFirestore.instance
-          .collection('devices')
-          .doc(deviceId)
-          .update({
-        'groups': FieldValue.arrayRemove([groupId])
-      });
-      await FirebaseFirestore.instance
-          .collection("timeline_groups")
-          .doc(groupId)
-          .delete();
-      setState(() {
-        _groupMembers.removeAt(index);
-      });
-      print('グループが削除されました');
-    } catch (e) {
-      print("エラーが発生しました: $e");
+
+    // 確認ダイアログを表示
+    bool? confirmDelete = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('グループ削除の確認'),
+          content: Text('タイムラインからも削除されますがよろしいですか？'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // キャンセル
+              },
+              child: Text('キャンセル'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // 削除実行
+              },
+              child: Text('削除'),
+            ),
+          ],
+        );
+      },
+    );
+
+    // ユーザーが削除を確認した場合のみ削除処理を実行
+    if (confirmDelete == true) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('devices')
+            .doc(deviceId)
+            .update({
+          'groups': FieldValue.arrayRemove([groupId]),
+        });
+        await FirebaseFirestore.instance
+            .collection("timeline_groups")
+            .doc(groupId)
+            .delete();
+
+        setState(() {
+          _groupMembers.removeAt(index);
+        });
+        print('グループが削除されました');
+      } catch (e) {
+        print("エラーが発生しました: $e");
+      }
+    } else {
+      print('削除がキャンセルされました');
     }
   }
 
@@ -153,8 +186,34 @@ class _GroupListPageState extends State<GroupListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('自分のグループ一覧'),
+        title: Text('自分の診断一覧',
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
         backgroundColor: const Color.fromARGB(255, 239, 239, 239),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 144, 238, 144), // 黄緑色
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                SizedBox(width: 5),
+                Text(
+                  'タイムライン投稿済み',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
       backgroundColor: const Color.fromARGB(255, 239, 239, 239),
       body: _isLoading
@@ -171,6 +230,8 @@ class _GroupListPageState extends State<GroupListPage> {
                           var group = _groupMembers[index];
                           List<Map<String, String>> members = group['members'];
                           String rank = group["totalrank"].toString();
+                          String timeline = group["timeline"] ??
+                              '0'; // timelineがない場合は '0' を設定
                           return Card(
                             margin: EdgeInsets.all(20),
                             child: InkWell(
@@ -193,8 +254,11 @@ class _GroupListPageState extends State<GroupListPage> {
                                       borderRadius: const BorderRadius.only(
                                           topLeft: Radius.circular(10),
                                           topRight: Radius.circular(10)),
-                                      color: const Color.fromARGB(
-                                          255, 251, 187, 187), // 上部の背景色
+                                      color: timeline == "1"
+                                          ? Color.fromARGB(255, 144, 238,
+                                              144) // 黄緑色（timelineが1のとき）
+                                          : Color.fromARGB(255, 251, 187,
+                                              187), // デフォルト色（timelineが1でないとき）
                                     ),
                                     child: Row(
                                       mainAxisAlignment:
@@ -292,8 +356,9 @@ class _GroupListPageState extends State<GroupListPage> {
                           },
                           child: Text("みんなの診断を見る"),
                           style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.deepOrangeAccent),
+                            foregroundColor: Colors.black,
+                            backgroundColor: Color.fromARGB(255, 207, 207, 207),
+                          ),
                         ))
                   ],
                 ),
