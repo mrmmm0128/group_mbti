@@ -124,7 +124,7 @@ class _MBTIScreenState extends State<MBTIScreen> {
       }
       print("グループデータの保存に成功");
 
-      var deviceId = await getDeviceUUID();
+      var deviceId = await getDeviceIDweb();
       print(deviceId);
 
       final deviceRef = FirebaseFirestore.instance

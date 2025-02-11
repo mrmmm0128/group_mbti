@@ -23,7 +23,7 @@ class _GroupListPageState extends State<GroupListPage> {
   Future<void> _loadGroupData() async {
     try {
       // デバイスIDを取得する関数（仮定）
-      var deviceId = await getDeviceUUID();
+      var deviceId = await getDeviceIDweb();
       // デバイスIDに基づくFirestoreのドキュメント参照
       var deviceRef =
           FirebaseFirestore.instance.collection('devices').doc(deviceId);
@@ -129,7 +129,7 @@ class _GroupListPageState extends State<GroupListPage> {
   Future<void> _deleteGroup(int index) async {
     var group = _groupMembers[index];
     var groupId = group['groupId'];
-    var deviceId = await getDeviceUUID();
+    var deviceId = await getDeviceIDweb();
 
     // 確認ダイアログを表示
     bool? confirmDelete = await showDialog<bool>(
