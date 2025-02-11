@@ -1,38 +1,132 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="/">
-
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
-
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="app_base">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
-
-  <title>app_base</title>
-  <link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16ページパーソナリティ診断 - グループ診断</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+        }
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+
+<header>
+    <h1>16ページパーソナリティ診断 - グループ診断</h1>
+    <p>グループメンバーと一緒にパーソナリティ診断を受け、結果を共有しましょう！</p>
+</header>
+
+<nav>
+    <a href="#home">ホーム</a>
+    <a href="#features">機能</a>
+    <a href="#about">詳細</a>
+    <a href="#contact">お問い合わせ</a>
+</nav>
+
+<div class="container">
+    <h2>診断のページ</h2>
+    
+    <div class="page active" id="page-1">
+        <h3>ステップ 1: あなたの性格タイプを選んでください</h3>
+        <p>最初に自分の性格タイプを選びましょう。どれが最も自分に近いですか？</p>
+        <div class="button-container">
+            <button class="btn" onclick="nextPage(2)">次のステップへ</button>
+        </div>
+    </div>
+    
+    <div class="page" id="page-2">
+        <h3>ステップ 2: グループで性格を比較しましょう</h3>
+        <p>メンバーそれぞれが選んだ性格タイプを比較し、お互いの違いを理解しましょう。</p>
+        <div class="button-container">
+            <button class="btn" onclick="nextPage(3)">次のステップへ</button>
+        </div>
+    </div>
+
+    <!-- 他のページ (最大16ページ) -->
+    <div class="page" id="page-3">
+        <h3>ステップ 3: 診断結果を確認する</h3>
+        <p>各メンバーの診断結果を表示し、グループ全体での傾向を分析します。</p>
+        <div class="button-container">
+            <button class="btn" onclick="nextPage(4)">次のステップへ</button>
+        </div>
+    </div>
+
+    <!-- 省略されたページ -->
+
+    <div class="page" id="page-16">
+        <h3>最後のステップ: 結果のまとめ</h3>
+        <p>全員の結果を総合して、グループの性格傾向をまとめます。今後の活動に役立てましょう！</p>
+        <div class="button-container">
+            <button class="btn" onclick="alert('診断完了しました！')">診断を終了する</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function nextPage(pageNumber) {
+        // 現在のページを非表示にする
+        const currentPage = document.querySelector('.page.active');
+        currentPage.classList.remove('active');
+
+        // 次のページを表示する
+        const nextPage = document.getElementById('page-' + pageNumber);
+        nextPage.classList.add('active');
+    }
+</script>
+
 </body>
 </html>
