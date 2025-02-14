@@ -54,10 +54,10 @@ class _TimelineGroupsPageState extends State<TimelineGroupsPage> {
                 var group = _groups[index].data() as Map<String, dynamic>;
 
                 List<dynamic> members = group['members'] ?? [];
-                String rank = group["totalrank"];
+                String rank = (group["totalrank"].toString());
 
                 return Card(
-                  margin: EdgeInsets.all(20),
+                  margin: EdgeInsets.all(16),
                   child: InkWell(
                     onTap: () {
                       List names =
@@ -71,7 +71,7 @@ class _TimelineGroupsPageState extends State<TimelineGroupsPage> {
                       children: [
                         // 上部: グループ名と編集・削除ボタン
                         Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(10),
@@ -130,8 +130,8 @@ class _TimelineGroupsPageState extends State<TimelineGroupsPage> {
                 onPressed: _fetchGroups,
                 child: _isLoading ? CircularProgressIndicator() : Text("もっと見る"),
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, //押したときの色！！
-                    backgroundColor: Colors.deepOrangeAccent),
+                    foregroundColor: Colors.black, //押したときの色！！
+                    backgroundColor: const Color.fromARGB(255, 251, 187, 187)),
               ),
             ),
         ],

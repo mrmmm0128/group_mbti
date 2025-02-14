@@ -217,7 +217,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("MBTIグループ診断"),
+        title: const Text("グループ相性診断"),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 214, 214, 214),
         elevation: 4,
@@ -254,7 +254,7 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                widget.totalrank.toString() + "点 !",
+                "${widget.totalrank}点 !",
                 style: const TextStyle(
                     fontSize: 48,
                     fontWeight: FontWeight.bold,

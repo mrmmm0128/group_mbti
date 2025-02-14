@@ -17,11 +17,11 @@ class Explain extends StatelessWidget {
               children: [
                 const SizedBox(height: 16),
                 const Text(
-                  'MBTI 一覧',
+                  '16性格タイプ 一覧',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const Divider(),
-                const Text("MBTIをタップすると詳しい情報が見れるよ"),
+                const Text("性格タイプをタップすると詳しい情報が見れるよ"),
                 const SizedBox(
                   height: 8,
                 ),
@@ -300,21 +300,9 @@ class Explain extends StatelessWidget {
       },
       child: Text(
         '$type（$description）',
-        style: TextStyle(fontSize: 15),
+        style: TextStyle(
+            fontSize: 15, color: const Color.fromARGB(255, 0, 96, 174)),
       ),
     );
   }
 }
-
-//buildMBTIItem(context, 'INTJ', '建築家'),
-//buildMBTIItem(context, 'INTP', '論理学者'),
-//buildMBTIItem(context, 'ENTJ', '指揮官'),
-//buildMBTIItem(context, 'ENTP', '討論者'),
-//buildMBTIItem(context, 'INFJ', '提唱者'),
-//                      buildMBTIItem(context, 'INFP', '仲介者'),
-//                      buildMBTIItem(context, 'ENFJ', '主人公'),
-//                      buildMBTIItem(context, 'ENFP', '広報者'),
-//buildMBTIItem(context, "ISTJ", "管理者"),
-//                      buildMBTIItem(context, "ISFJ", "擁護者"),
-//                      buildMBTIItem(context, "ESTJ", "幹部"),
-//                      buildMBTIItem(context, "ESFJ", "領事官"),

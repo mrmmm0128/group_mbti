@@ -84,38 +84,46 @@ class _GroupListPageState extends State<GroupListPage> {
   }
 
   Future<void> _changeGroupName(int index) async {
+    // グループ情報の取得
     var group = _groupMembers[index];
     String groupId = group['groupId'];
-    TextEditingController controller =
-        TextEditingController(text: group['groupName']);
+    String currentName = group['groupName'] ?? "グループ名未設定";
+
+    // テキストコントローラーの初期化
+    TextEditingController controller = TextEditingController();
 
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("グループ名を変更"),
+          title: Text("グループ名変更"),
           content: TextField(
-            controller: controller,
-            decoration: InputDecoration(labelText: "新しいグループ名"),
+            controller: controller, // コントローラーを正しく渡す
+            decoration: InputDecoration(
+              hintText: "新しいグループ名を入力", // ガイドとしてのテキスト
+            ),
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(context), // ダイアログを閉じる
               child: Text("キャンセル"),
             ),
             TextButton(
               onPressed: () async {
                 String newName = controller.text.trim();
-                if (newName.isNotEmpty) {
+                if (newName.isNotEmpty && newName != currentName) {
+                  // Firestoreの更新
                   await FirebaseFirestore.instance
                       .collection('groups')
                       .doc(groupId)
                       .update({'groupName': newName});
+
+                  // ローカルの状態を更新
                   setState(() {
                     _groupMembers[index]['groupName'] = newName;
                   });
                 }
-                Navigator.pop(context);
+                Navigator.pop(context); // ダイアログを閉じる
               },
               child: Text("保存"),
             ),
@@ -172,7 +180,7 @@ class _GroupListPageState extends State<GroupListPage> {
                           List<Map<String, String>> members = group['members'];
                           String rank = group["totalrank"].toString();
                           return Card(
-                            margin: EdgeInsets.all(20),
+                            margin: EdgeInsets.all(16),
                             child: InkWell(
                               onTap: () {
                                 List<String> names = members
@@ -188,7 +196,10 @@ class _GroupListPageState extends State<GroupListPage> {
                                 children: [
                                   // 上部: グループ名と編集・削除ボタン
                                   Container(
-                                    padding: const EdgeInsets.all(8),
+                                    padding: const EdgeInsets.only(
+                                      left: 16,
+                                      right: 16,
+                                    ),
                                     decoration: BoxDecoration(
                                       borderRadius: const BorderRadius.only(
                                           topLeft: Radius.circular(10),
@@ -229,7 +240,8 @@ class _GroupListPageState extends State<GroupListPage> {
                                   // 下部: メンバーリスト
                                   Container(
                                     color: Colors.grey[200], // 下部の背景色
-                                    padding: const EdgeInsets.all(8),
+                                    padding: const EdgeInsets.only(
+                                        left: 16, right: 16),
                                     constraints: BoxConstraints(
                                       maxHeight: 200, // 高さ制限（適宜調整）
                                     ),
@@ -264,10 +276,10 @@ class _GroupListPageState extends State<GroupListPage> {
                                             }).toList(),
                                           ),
                                         ),
-                                        SizedBox(width: 16), // 🔹 ランクとの間隔を適度に設定
+                                        SizedBox(width: 10), // 🔹 ランクとの間隔を適度に設定
                                         Text("$rank 点",
                                             style: TextStyle(
-                                                fontSize: 18,
+                                                fontSize: 26,
                                                 fontWeight: FontWeight.bold)),
                                       ],
                                     ),
@@ -280,8 +292,8 @@ class _GroupListPageState extends State<GroupListPage> {
                       ),
                     ),
                     Padding(
-                        padding: EdgeInsets.all(8),
-                        child: ElevatedButton(
+                      padding: EdgeInsets.all(8),
+                      child: ElevatedButton(
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -290,11 +302,25 @@ class _GroupListPageState extends State<GroupListPage> {
                                       TimelineGroupsPage()), // 遷移先のページ
                             );
                           },
-                          child: Text("みんなの診断を見る"),
                           style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.deepOrangeAccent),
-                        ))
+                            foregroundColor: Colors.black,
+                            backgroundColor:
+                                const Color.fromARGB(255, 251, 187, 187),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.search,
+                                color: Colors.black,
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              const Text("みんなの診断をみる"),
+                            ],
+                          )),
+                    )
                   ],
                 ),
     );

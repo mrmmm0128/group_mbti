@@ -200,7 +200,7 @@ class _MBTIScreenState extends State<MBTIScreen> {
           const Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
-              'MBTIを活用してグループの評価をしましょう',
+              '16タイプ性格診断を活用して\nグループの評価をしましょう',
               style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             ),
           ),
@@ -269,42 +269,70 @@ class _MBTIScreenState extends State<MBTIScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: _addMember,
-                  icon: Icon(Icons.add),
-                  tooltip: "メンバーを追加",
-                ),
-                SizedBox(width: 16),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 207, 207, 207),
+            padding: const EdgeInsets.only(left: 16, right: 16),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 207, 207, 207),
+              ),
+              onPressed: _addMember,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add),
+                  const SizedBox(
+                    width: 16,
                   ),
-                  onPressed: () async {
-                    List<String> names = _nameControllers
-                        .map((controller) => controller.text)
-                        .toList();
-                    await _saveGroup();
-                    navigateResult(context, _selectedMBTI, names); // 結果画面へ遷移
-                  },
-                  child: Text(
-                    "診断",
+                  Text(
+                    "メンバーを追加",
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 16, right: 16, top: 2, bottom: 8),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 207, 207, 207),
+                      ),
+                      onPressed: () async {
+                        List<String> names = _nameControllers
+                            .map((controller) => controller.text)
+                            .toList();
+                        await _saveGroup();
+                        navigateResult(
+                            context, _selectedMBTI, names); // 結果画面へ遷移
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            "診断",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Checkbox(
+                      value: _isChecked,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _isChecked = value!;
+                        });
+                      },
+                    ),
+                    Text(_isChecked ? "タイムラインに投稿" : "結果を非公開"),
+                  ],
                 ),
-                Checkbox(
-                  value: _isChecked,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isChecked = value!;
-                    });
-                  },
-                ),
-                Text(_isChecked ? "タイムラインに投稿" : "公開しない"),
               ],
             ),
           ),

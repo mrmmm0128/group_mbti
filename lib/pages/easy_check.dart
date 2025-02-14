@@ -51,21 +51,13 @@ class _EasyCheckPageState extends State<EasyCheck> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 239, 239, 239),
       appBar: AppBar(
-        title: const Text("簡単にMBTIを診断しましょう"),
+        title: const Text("簡単に性格タイプを診断しましょう"),
         backgroundColor: const Color.fromARGB(255, 239, 239, 239),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const Text(
-              "4つの質問に答えましょう",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Divider(),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
