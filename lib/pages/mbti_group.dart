@@ -191,6 +191,31 @@ class _MBTIScreenState extends State<MBTIScreen> {
     await _saveToFirestore(members, totalrank);
   }
 
+  String getJapaneseMBTIName(String type) {
+    // MBTIタイプと日本語名称の辞書を定義
+    Map<String, String> mbtiDictionary = {
+      "INTJ": "INTJ（建築家）",
+      "INTP": "INTP（論理学者）",
+      "INFJ": "INFJ（提唱者）",
+      "INFP": "INFP（仲介者）",
+      "ISTJ": "ISTJ（管理者）",
+      "ISFJ": "ISFJ（擁護者）",
+      "ISTP": "ISTP（巨匠）",
+      "ISFP": "ISFP（冒険家）",
+      "ENTJ": "ENTJ（指揮官）",
+      "ENTP": "ENTP（討論者）",
+      "ENFJ": "ENFJ（主人公）",
+      "ENFP": "ENFP（広報運動家）",
+      "ESTJ": "ESTJ（幹部）",
+      "ESFJ": "ESFJ（領事官）",
+      "ESTP": "ESTP（起業家）",
+      "ESFP": "ESFP（エンターテイナー）",
+    };
+
+    // 辞書から対応する日本語名称を取得
+    return mbtiDictionary[type] ?? "該当するMBTIタイプが見つかりません。";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -225,7 +250,7 @@ class _MBTIScreenState extends State<MBTIScreen> {
                   ),
                   child: ListTile(
                     leading: CircleAvatar(
-                      radius: 24,
+                      radius: 26,
 
                       backgroundColor:
                           _getBackgroundColor2(_selectedMBTI[index]),
@@ -285,7 +310,8 @@ class _MBTIScreenState extends State<MBTIScreen> {
                   Text(
                     "メンバーを追加",
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                      color: Colors.black,
+                    ),
                   ),
                 ],
               ),
@@ -304,12 +330,27 @@ class _MBTIScreenState extends State<MBTIScreen> {
                         backgroundColor: Color.fromARGB(255, 207, 207, 207),
                       ),
                       onPressed: () async {
+                        // 名前を取得し、空欄を補完
                         List<String> names = _nameControllers
-                            .map((controller) => controller.text)
-                            .toList();
+                            .asMap() // インデックスとコントローラーを紐づけ
+                            .entries
+                            .map((entry) {
+                          int index = entry.key; // インデックス
+                          String text =
+                              entry.value.text.trim(); // テキストの取得（前後の空白を除去）
+                          return text.isEmpty
+                              ? "メンバー${index + 1}"
+                              : text; // 空欄なら補完
+                        }).toList();
+
+                        // 補完された names をデバッグ出力で確認（オプション）
+                        print("補完された名前リスト: $names");
+
+                        // グループを保存
                         await _saveGroup();
-                        navigateResult(
-                            context, _selectedMBTI, names); // 結果画面へ遷移
+
+                        // 結果画面へ遷移
+                        navigateResult(context, _selectedMBTI, names);
                       },
                       child: Row(
                         children: [
@@ -321,6 +362,9 @@ class _MBTIScreenState extends State<MBTIScreen> {
                           ),
                         ],
                       ),
+                    ),
+                    const SizedBox(
+                      width: 16,
                     ),
                     Checkbox(
                       value: _isChecked,

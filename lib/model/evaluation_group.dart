@@ -133,6 +133,10 @@ List<String> countAndSortMBTILetters(Map<String, String> mbtiDict) {
   // ソートされたアルファベットだけのリストを作成して返す
   var finalSortedLetters = sortedLetters.map((entry) => entry.key).toList();
 
+  print(finalSortedLetters);
+  print(sortedLetters);
+  print(mbtiDict);
+
   return finalSortedLetters;
 }
 

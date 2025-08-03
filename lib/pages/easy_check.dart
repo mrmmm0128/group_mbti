@@ -168,7 +168,7 @@ class _EasyCheckPageState extends State<EasyCheck> {
                                     mainAxisSize:
                                         MainAxisSize.min, // 内容に合わせてサイズを調整
                                     children: [
-                                      Text("あなたのMBTIは $result です！",
+                                      Text("あなたの性格タイプは $result です！",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16)),

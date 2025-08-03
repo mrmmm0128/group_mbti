@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_radar_chart/flutter_radar_chart.dart';
 import '/model/evaluation_group.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:app_base/components/ad_mob.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ResultScreen extends StatefulWidget {
   final int totalrank;
@@ -32,7 +34,7 @@ class _ResultScreenState extends State<ResultScreen> {
     "E": "休む暇なく動き続ける集団", // E
     "S": "現実を見据えたリアリスト集団", // S
     "F": "配慮が溢れる思いやり集団", // F
-    "P": "予測不可能 思いつきで進む冒険者", // P
+    "P": "予測不可能 \n思いつきで進む冒険者", // P
     "N": "先見の明あり 発明家集団", // N
     // 重複がある場合、ランダムで返す場合の処理は別途実装する。
   };
@@ -88,6 +90,31 @@ class _ResultScreenState extends State<ResultScreen> {
     "ESFP": "エネルギッシュで楽しい雰囲気を作り出すムードメーカー。即興力があり、臨機応変に動ける柔軟性を持つ。"
   };
 
+  String _getMBTIicon(String mbti) {
+    // MBTIタイプに対応する画像パスをマップで定義
+    Map<String, String> mbtiIcons = {
+      "INTJ": "assets/INTJ.png",
+      "INTP": "assets/INTP.png",
+      "ENTJ": "assets/ENTJ.png",
+      "ENTP": "assets/ENTP.png",
+      "INFJ": "assets/INFJ.png",
+      "INFP": "assets/INFP.png",
+      "ENFJ": "assets/ENFJ.png",
+      "ENFP": "assets/ENFP.png",
+      "ISTJ": "assets/ISTJ.png",
+      "ISFJ": "assets/ISFJ.png",
+      "ESTJ": "assets/ESTJ.png",
+      "ESFJ": "assets/ESFJ.png",
+      "ISTP": "assets/ISTP.png",
+      "ISFP": "assets/ISFP.png",
+      "ESTP": "assets/ESTP.png",
+      "ESFP": "assets/ESFP.png",
+    };
+
+    // MBTIに対応する画像パスを返す（該当がなければデフォルトの画像を返す）
+    return mbtiIcons[mbti] ?? "assets/image1.png";
+  }
+
   Widget displayRoles(Map<String, String> personMBTIs) {
     return Column(
       children: personMBTIs.entries.map((entry) {
@@ -111,24 +138,45 @@ class _ResultScreenState extends State<ResultScreen> {
             ],
             border: Border.all(color: Colors.grey.shade300), // ボーダー
           ),
-          child: Column(
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "$name : $mbti",
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              Image.asset(
+                _getMBTIicon(mbti),
+                width: 60,
+                height: 110,
+                fit: BoxFit.cover,
               ),
-              const Divider(
-                height: 5,
-                thickness: 1,
-                indent: 0,
-                endIndent: 0,
-                color: Colors.grey,
-              ),
-              Text(
-                roleDescription,
-                style: const TextStyle(fontSize: 16),
+              const SizedBox(width: 10),
+              Expanded(
+                // Textが長い場合に折り返しを可能にする
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "$name : $mbti",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1, // 必要に応じて最大行数を設定
+                      overflow: TextOverflow.ellipsis, // 長すぎる場合に省略
+                    ),
+                    const SizedBox(height: 5),
+                    const Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      roleDescription,
+                      style: const TextStyle(fontSize: 16),
+                      softWrap: true, // 折り返しを有効化
+                      overflow: TextOverflow.clip, // 長すぎる場合に切り取る
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -217,7 +265,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("グループ相性診断"),
+        title: const Text("診断結果"),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 214, 214, 214),
         elevation: 4,
@@ -229,7 +277,7 @@ class _ResultScreenState extends State<ResultScreen> {
               // 共有する内容
               String shareText =
                   "あなたたちのグループ相性を診断しました！\n\n診断したメンバー \n $sharemenbers\n診断結果 $rank 点\n\nさらに詳しい情報が知りたい方はアプリをインストール！ \n$shareLink";
-              const subject = "結果を共有しましょう";
+              const subject = "グループのみんなに結果を共有する";
 
               // 共有機能を呼び出し
               Share.share(shareText, subject: subject);
@@ -244,23 +292,56 @@ class _ResultScreenState extends State<ResultScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // スコア部分
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/kokuban.png', // 画像のパス
+                    fit: BoxFit.cover,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "あなたたちのグループは..  ",
+                            style: GoogleFonts.yuseiMagic(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "${widget.totalrank}点 ",
+                            style: GoogleFonts.yuseiMagic(
+                                fontSize: 48,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              const Divider(),
+
               const SizedBox(
-                height: 20,
+                height: 8,
               ),
-              const Text(
-                "あなたたちのグループは...",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
+
               Text(
-                "${widget.totalrank}点 !",
-                style: const TextStyle(
-                    fontSize: 48,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red),
+                "↓↓↓ 詳しい結果を確認しましょう ↓↓↓",
+                style: TextStyle(fontSize: 16),
               ),
-              const SizedBox(height: 32),
 
               // レーダーチャート部分（仮）
               SizedBox(
@@ -283,25 +364,34 @@ class _ResultScreenState extends State<ResultScreen> {
                 ),
               ),
 
-              const SizedBox(height: 16),
-
-              // キャッチコピー部分
-              Text(
-                valueComment[countAndSortMBTILetters(widget.NameAndMbti)[0]] ??
-                    "特に特徴のないグループ",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24, // 文字サイズを少し大きく
-                  fontWeight: FontWeight.w600, // ボールドすぎないが目を引く
-                  color: Colors.red, // 落ち着いた色調の紫を使用
-                  letterSpacing: 1.3, // 文字間隔を少し広げて読みやすく
-                ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/hukidasi.png', // 画像のパス
+                    fit: BoxFit.cover,
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: // キャッチコピー部分
+                        Text(
+                      valueComment[
+                              countAndSortMBTILetters(widget.NameAndMbti)[0]] ??
+                          "特に特徴のないグループ",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.rocknRollOne(
+                          fontSize: 28, color: Colors.red),
+                    ),
+                  ),
+                ],
               ),
+
               const SizedBox(height: 16),
 
               // 説明文部分
               Text(
-                valueComment2[countAndSortMBTILetters(widget.NameAndMbti)[1]] ??
+                valueComment2[countAndSortMBTILetters(widget.NameAndMbti)[0]] ??
                     "良いグループですね",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16),

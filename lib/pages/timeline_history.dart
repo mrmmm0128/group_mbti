@@ -104,7 +104,9 @@ class _TimelineGroupsPageState extends State<TimelineGroupsPage> {
                                     return Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 4),
-                                        child: Text(member['mbti']!));
+                                        child: Text(
+                                          member['mbti']!,
+                                        ));
                                   }).toList(),
                                 ),
                               ),

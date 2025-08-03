@@ -73,9 +73,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       appBar: AppBar(
         leading: Image.asset(
           "assets/MBTI2.png",
-          width: 45,
+          width: 40,
         ),
-        leadingWidth: 65,
+        leadingWidth: 75,
         title: const Text('グループ相性診断'),
         backgroundColor: Color.fromARGB(255, 207, 207, 207),
         shadowColor: Colors.black,

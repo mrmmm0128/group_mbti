@@ -113,7 +113,7 @@ class MBTIDetailPage extends StatelessWidget {
                   alignment: Alignment.center,
                   width: double.infinity,
                   padding: const EdgeInsets.only(
-                      top: 0, right: 10, left: 10, bottom: 16),
+                      top: 10, right: 10, left: 10, bottom: 10),
                   margin:
                       const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
                   decoration: BoxDecoration(

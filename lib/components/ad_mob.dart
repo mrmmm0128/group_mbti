@@ -6,7 +6,7 @@ class AdMobManager {
   final AdManagerBannerAd _adBanner;
   AdMobManager()
       : _adBanner = AdManagerBannerAd(
-          adUnitId: 'ca-app-pub-3940256099942544/6300978111',
+          adUnitId: 'ca-app-pub-8735314159015654/5158508662',
           sizes: [AdSize.banner],
           request: AdManagerAdRequest(),
           listener: AdManagerBannerAdListener(
